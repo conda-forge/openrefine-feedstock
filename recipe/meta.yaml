@@ -1,5 +1,5 @@
 {% set name = "openrefine" %}
-{% set version = "3.5.0" %}
+{% set version = "3.6.0" %}
 
 package:
   name: {{ name }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/OpenRefine/OpenRefine/archive/{{ version }}.tar.gz
-  sha256: b96f98cfc558c4a76b53902bb901c9b948a58bcbea5e8b897ca9d56a66bf517c
+  sha256: 739bd220fccc5e174b1865cac53d716067edc64f4ad9708536e88a71ac70e1e8
   patches:
     - 0001-Remove-Windows-packaging-profile.patch  # [linux]
 
