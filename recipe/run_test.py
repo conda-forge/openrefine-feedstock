@@ -22,7 +22,8 @@ with socket.socket() as sock:
 with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryFile(mode="w+") as log:
     server = subprocess.Popen(
         [launcher, flag + "i", "127.0.0.1", flag + "p", port,
-         flag + "d", directory, flag + "m", "256M", flag + "x", "refine.headless=true"],
+         flag + "d", directory, flag + "m", "256M"],
+        env={**os.environ, "JAVA_OPTIONS": "-Drefine.headless=true"},
         stdout=log, stderr=subprocess.STDOUT,
         start_new_session=sys.platform != "win32",
     )

@@ -33,9 +33,9 @@ tests:
       - if: unix
         then: test -f $PREFIX/bin/refine
       - if: win
-        then: if exist %LIBRARY_PREFIX%\bin\refine.bat (exit 0) else (exit 1)
+        then: if not exist %LIBRARY_PREFIX%\bin\refine.bat exit /b 1
       - if: win
-        then: if exist %LIBRARY_PREFIX%\opt\openrefine\refine.bat (exit 0) else (exit 1)
+        then: if not exist %LIBRARY_PREFIX%\opt\openrefine\refine.bat exit /b 1
 
   - requirements:
       run:
