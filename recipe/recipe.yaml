@@ -1,37 +1,43 @@
-{% set name = "openrefine" %}
-{% set version = "3.5.0" %}
+schema_version: 1
+
+context:
+  name: openrefine
+  version: "3.5.0"
 
 package:
-  name: {{ name }}
-  version: {{ version }}
+  name: ${{ name }}
+  version: ${{ version }}
 
 source:
-  url: https://github.com/OpenRefine/OpenRefine/archive/{{ version }}.tar.gz
+  url: https://github.com/OpenRefine/OpenRefine/archive/${{ version }}.tar.gz
   sha256: b96f98cfc558c4a76b53902bb901c9b948a58bcbea5e8b897ca9d56a66bf517c
   patches:
-    - 0001-Remove-Windows-packaging-profile.patch  # [linux]
+    - if: linux
+      then: 0001-Remove-Windows-packaging-profile.patch
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:
-    - 7zip  # [win]
+    - if: win
+      then: 7zip
     - maven
   run:
     - openjdk
 
-test:
-  commands:
-    # cannot run refine -h for now in conda-build as it starts the server and never finishes
-    # - refine -h   # [unix]
-    - test -f $PREFIX/opt/openrefine/refine  # [unix]
-    - test -f $PREFIX/bin/refine  # [unix]
-    - if exist %LIBRARY_PREFIX%\bin\refine.bat (exit 0) else (exit 1)  # [win]
-    - if exist %LIBRARY_PREFIX%\opt\openrefine-%PKG_VERSION%\refine.bat (exit 0) else (exit 1)  # [win]
+tests:
+  - script:
+      - if: unix
+        then: test -f $PREFIX/opt/openrefine/refine
+      - if: unix
+        then: test -f $PREFIX/bin/refine
+      - if: win
+        then: if exist %LIBRARY_PREFIX%\bin\refine.bat (exit 0) else (exit 1)
+      - if: win
+        then: if exist %LIBRARY_PREFIX%\opt\openrefine-%PKG_VERSION%\refine.bat (exit 0) else (exit 1)
 
 about:
-  home: https://openrefine.org/
   license: BSD-3-Clause
   license_file:
     - LICENSE.txt
@@ -56,7 +62,8 @@ about:
     - licenses/apache2.0.LICENSE.txt
     - licenses/marc4j.LICENSE.txt
   summary: OpenRefine is a free, open source power tool for working with messy data and improving it
-  dev_url: https://github.com/OpenRefine/OpenRefine
+  homepage: https://openrefine.org/
+  repository: https://github.com/OpenRefine/OpenRefine
 
 extra:
   recipe-maintainers:
