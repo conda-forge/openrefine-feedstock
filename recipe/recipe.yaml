@@ -1,0 +1,62 @@
+schema_version: 1
+
+context:
+  name: openrefine
+  version: "3.10.1"
+
+package:
+  name: openrefine
+  version: ${{ version }}
+
+source:
+  url: https://github.com/OpenRefine/OpenRefine/archive/${{ version }}.tar.gz
+  sha256: ed14d83322331e597f6e1ecbd67a83c232d6f4eedddd41b15dd1bcc4ab41b8fd
+  patches:
+    - 0001-use-conda-java.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - if: win
+      then: 7zip
+    - maven
+    - openjdk 21.*
+  run:
+    - openjdk >=11,<22
+
+tests:
+  - package_contents:
+      files:
+        - if: unix
+          then:
+            - opt/openrefine/refine
+            - bin/refine
+        - if: win
+          then:
+            - Library/bin/refine.bat
+            - Library/opt/openrefine/refine.bat
+
+  - requirements:
+      run:
+        - python
+    files:
+      recipe:
+        - run_test.py
+    script: python run_test.py
+
+about:
+  license: BSD-3-Clause
+  license_file:
+    - LICENSE.txt
+    - main/webapp/licenses/
+    - packaging/target/generated-resources/licenses/
+  summary: OpenRefine is a free, open source power tool for working with messy data and improving it
+  homepage: https://openrefine.org/
+  repository: https://github.com/OpenRefine/OpenRefine
+
+extra:
+  recipe-maintainers:
+    - wolfv
+    - wetneb
