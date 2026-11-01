@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: openrefine
-  version: "3.5.0"
+  version: "3.10.1"
 
 package:
   name: ${{ name }}
@@ -10,21 +10,21 @@ package:
 
 source:
   url: https://github.com/OpenRefine/OpenRefine/archive/${{ version }}.tar.gz
-  sha256: b96f98cfc558c4a76b53902bb901c9b948a58bcbea5e8b897ca9d56a66bf517c
+  sha256: ed14d83322331e597f6e1ecbd67a83c232d6f4eedddd41b15dd1bcc4ab41b8fd
   patches:
-    - if: linux
-      then: 0001-Remove-Windows-packaging-profile.patch
+    - 0001-use-conda-java.patch
 
 build:
-  number: 1
+  number: 0
 
 requirements:
   build:
     - if: win
       then: 7zip
     - maven
+    - openjdk 21.*
   run:
-    - openjdk
+    - openjdk >=11,<22
 
 tests:
   - script:
@@ -35,32 +35,22 @@ tests:
       - if: win
         then: if exist %LIBRARY_PREFIX%\bin\refine.bat (exit 0) else (exit 1)
       - if: win
-        then: if exist %LIBRARY_PREFIX%\opt\openrefine-%PKG_VERSION%\refine.bat (exit 0) else (exit 1)
+        then: if exist %LIBRARY_PREFIX%\opt\openrefine\refine.bat (exit 0) else (exit 1)
+
+  - requirements:
+      run:
+        - python
+    files:
+      recipe:
+        - run_test.py
+    script: python run_test.py
 
 about:
   license: BSD-3-Clause
   license_file:
     - LICENSE.txt
-    - licenses/jquery.LICENSE.txt
-    - licenses/mockito.LICENSE.txt
-    - licenses/imgareaselect.LICENSE.txt
-    - licenses/jquery.i18n.LICENSE.txt
-    - licenses/slf4j.LICENSE.txt
-    - licenses/jsoup.LICENSE.txt
-    - licenses/datejs.LICENSE.txt
-    - licenses/jquery.eventstack.LICENSE.txt
-    - licenses/jquery_ui.LICENSE.txt
-    - licenses/freebase_suggest.LICENSE.txt
-    - licenses/simile.LICENSE.txt
-    - licenses/arithcode.LICENSE.txt
-    - licenses/chrome_frame.LICENSE.txt
-    - licenses/icu4j.LICENSE.txt
-    - licenses/simile-ajax.2.3.0.LICENSE.txt
-    - licenses/dom4j.LICENSE.txt
-    - licenses/secondstring.LICENSE.txt
-    - licenses/jrdf.LICENSE.txt
-    - licenses/apache2.0.LICENSE.txt
-    - licenses/marc4j.LICENSE.txt
+    - main/webapp/licenses/
+    - packaging/target/generated-resources/licenses/
   summary: OpenRefine is a free, open source power tool for working with messy data and improving it
   homepage: https://openrefine.org/
   repository: https://github.com/OpenRefine/OpenRefine

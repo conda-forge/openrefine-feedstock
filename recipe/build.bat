@@ -1,13 +1,21 @@
+@echo on
 setlocal
 
-rem Maven based build doesn't currently work on Linux
-CALL mvn clean
-CALL mvn process-resources
-CALL mvn package -DskipTests
-
-7za x %SRC_DIR%\packaging\target\openrefine-win-%PKG_VERSION%.zip -o%LIBRARY_PREFIX%\opt\
+call mvn -B versions:set -DnewVersion=%PKG_VERSION% -DgenerateBackupPoms=false
+if errorlevel 1 exit 1
+call mvn -B package -P linux -DskipTests
 if errorlevel 1 exit 1
 
-ECHO CD %LIBRARY_PREFIX%\opt\openrefine-%PKG_VERSION%\ > %LIBRARY_PREFIX%\bin\refine.bat
-ECHO CALL refine.bat %%* >> %LIBRARY_PREFIX%\bin\refine.bat
+7za x packaging\target\openrefine-linux-%PKG_VERSION%.tar.gz
+if errorlevel 1 exit 1
+7za x openrefine-linux-%PKG_VERSION%.tar -o"%LIBRARY_PREFIX%\opt"
+if errorlevel 1 exit 1
+move "%LIBRARY_PREFIX%\opt\openrefine-%PKG_VERSION%" "%LIBRARY_PREFIX%\opt\openrefine"
+if errorlevel 1 exit 1
+copy refine.bat "%LIBRARY_PREFIX%\opt\openrefine\refine.bat"
+if errorlevel 1 exit 1
+
+mkdir "%LIBRARY_PREFIX%\bin"
+> "%LIBRARY_PREFIX%\bin\refine.bat" echo @echo off
+>> "%LIBRARY_PREFIX%\bin\refine.bat" echo call "%%~dp0..\opt\openrefine\refine.bat" /w webapp %%*
 if errorlevel 1 exit 1
