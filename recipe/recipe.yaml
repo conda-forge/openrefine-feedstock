@@ -27,15 +27,16 @@ requirements:
     - openjdk >=11,<22
 
 tests:
-  - script:
-      - if: unix
-        then: test -f $PREFIX/opt/openrefine/refine
-      - if: unix
-        then: test -f $PREFIX/bin/refine
-      - if: win
-        then: if not exist %LIBRARY_PREFIX%\bin\refine.bat exit /b 1
-      - if: win
-        then: if not exist %LIBRARY_PREFIX%\opt\openrefine\refine.bat exit /b 1
+  - package_contents:
+      files:
+        - if: unix
+          then:
+            - opt/openrefine/refine
+            - bin/refine
+        - if: win
+          then:
+            - Library/bin/refine.bat
+            - Library/opt/openrefine/refine.bat
 
   - requirements:
       run:
