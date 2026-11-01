@@ -1,5 +1,6 @@
 import os
 import shutil
+import signal
 import socket
 import subprocess
 import sys
@@ -23,6 +24,7 @@ with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryFile(mode="w+
         [launcher, flag + "i", "127.0.0.1", flag + "p", port,
          flag + "d", directory, flag + "m", "256M", flag + "x", "refine.headless=true"],
         stdout=log, stderr=subprocess.STDOUT,
+        start_new_session=sys.platform != "win32",
     )
     try:
         deadline = time.monotonic() + 90
@@ -39,9 +41,13 @@ with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryFile(mode="w+
             raise TimeoutError("OpenRefine did not start")
     finally:
         if sys.platform == "win32":
-            subprocess.run(["taskkill", "/F", "/T", "/PID", str(server.pid)], check=True)
+            if server.poll() is None:
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(server.pid)], check=True)
         else:
-            server.terminate()
+            try:
+                os.killpg(server.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
         try:
             server.wait(timeout=10)
         except subprocess.TimeoutExpired:

@@ -5,7 +5,7 @@ context:
   version: "3.10.1"
 
 package:
-  name: ${{ name }}
+  name: openrefine
   version: ${{ version }}
 
 source:
