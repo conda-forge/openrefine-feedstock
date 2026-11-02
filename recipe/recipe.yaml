@@ -58,6 +58,8 @@ about:
   license_file:
     - LICENSE.txt
     - main/webapp/licenses/
+    - main/webapp/node_modules/**/LICENSE*
+    - main/webapp/node_modules/**/MIT-LICENSE*
     - packaging/target/generated-resources/licenses/
   summary: OpenRefine is a free, open source power tool for working with messy data and improving it
   homepage: https://openrefine.org/

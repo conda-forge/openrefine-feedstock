@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryFile(mode="w+
         for asset in dependencies["files"]:
             path = asset["to"] or asset["from"]
             with urllib.request.urlopen(
-                f"http://127.0.0.1:{port}/modules/core/3rdparty/{path}", timeout=3
+                f"http://127.0.0.1:{port}/3rdparty/{path}", timeout=3
             ) as response:
                 assert response.read(), f"Empty frontend asset: {path}"
                 assert response.headers.get_content_type() != "text/html", path
