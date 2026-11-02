@@ -221,6 +221,5 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
-* [@wetneb](https://github.com/wetneb/)
 * [@wolfv](https://github.com/wolfv/)
 
