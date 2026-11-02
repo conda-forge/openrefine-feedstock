@@ -1,4 +1,6 @@
+import json
 import os
+from pathlib import Path
 import shutil
 import signal
 import socket
@@ -40,6 +42,14 @@ with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryFile(mode="w+
                 time.sleep(0.5)
         else:
             raise TimeoutError("OpenRefine did not start")
+        dependencies = json.loads(Path("main/webapp/dependencies.json").read_text())
+        for asset in dependencies["files"]:
+            path = asset["to"] or asset["from"]
+            with urllib.request.urlopen(
+                f"http://127.0.0.1:{port}/3rdparty/{path}", timeout=3
+            ) as response:
+                assert response.read(), f"Empty frontend asset: {path}"
+                assert response.headers.get_content_type() != "text/html", path
     finally:
         if sys.platform == "win32":
             if server.poll() is None:

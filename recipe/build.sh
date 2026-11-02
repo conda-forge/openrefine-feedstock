@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euxo pipefail
 
+(cd main/webapp && npm ci --no-audit --no-fund)
+
 mvn -B versions:set -DnewVersion="${PKG_VERSION}" -DgenerateBackupPoms=false
 # The portable Java distribution works on both Linux and macOS without a bundled JRE.
 mvn -B package -P linux -DskipTests

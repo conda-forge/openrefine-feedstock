@@ -1,6 +1,11 @@
 @echo on
 setlocal
 
+pushd main\webapp
+call npm ci --no-audit --no-fund
+if errorlevel 1 exit 1
+popd
+
 call mvn -B versions:set -DnewVersion=%PKG_VERSION% -DgenerateBackupPoms=false
 if errorlevel 1 exit 1
 call mvn -B package -P linux -DskipTests
