@@ -15,13 +15,14 @@ source:
     - 0001-use-conda-java.patch
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:
     - if: win
       then: 7zip
     - maven
+    - nodejs
     - openjdk 21.*
   run:
     - openjdk >=11,<22
@@ -33,15 +34,21 @@ tests:
           then:
             - opt/openrefine/refine
             - bin/refine
+            - opt/openrefine/webapp/modules/core/3rdparty/select2/select2.css
+            - opt/openrefine/webapp/modules/core/3rdparty/tablesorter/theme.blue.css
         - if: win
           then:
             - Library/bin/refine.bat
             - Library/opt/openrefine/refine.bat
+            - Library/opt/openrefine/webapp/modules/core/3rdparty/select2/select2.css
+            - Library/opt/openrefine/webapp/modules/core/3rdparty/tablesorter/theme.blue.css
 
   - requirements:
       run:
         - python
     files:
+      source:
+        - main/webapp/dependencies.json
       recipe:
         - run_test.py
     script: python run_test.py
