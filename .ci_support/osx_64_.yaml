@@ -5,8 +5,6 @@ channel_sources:
 channel_targets:
 - conda-forge main
 macos_machine:
-- arm64-apple-darwin20.0.0
-nodejs:
-- '26'
+- x86_64-apple-darwin13.4.0
 target_platform:
-- osx-arm64
+- osx-64
